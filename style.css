@@ -1,0 +1,23 @@
+.top{
+	background-color: #4169E1;
+	min-height: 60%;
+	margin-bottom:30px;
+}
+.img{
+	max-width: 23%;
+	margin-left: 20px;
+	
+}
+.row{
+	margin-bottom: 30px;
+	max-width: 50px;
+	max-height: 50px;
+}
+.container-fluid{ 
+	max-width: 1700px;
+	max-height: 100px;
+}
+.table tr{
+	height: 50px;
+	width: 100px;
+}
