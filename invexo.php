@@ -3,32 +3,20 @@
     //verifica a página atual caso seja informada na URL, senão atribui como 1ª página 
     $pagina = (isset($_GET['pagina']))? $_GET['pagina'] : 1; 
     $pagina = intval($pagina);
-
+    
     // echo "Tipo pagina no invexo.php topo: ".gettype($pagina)."\n";
-    echo 'PAGINA : '.$pagina;
+    // echo 'PAGINA : '.$pagina;
     $registros = 15;
     $result = Negocios::index($pagina, $registros);
     $total = $result->metadata->pagination->total;
-    
     //calcula o número de páginas arredondando o resultado para cima 
     $numPaginas = ceil($total/$registros); 
     $lim = 5;
-
+    
     //variavel para calcular o início da visualização com base na página atual 
     $inicio = ((($pagina - $lim) > 1)? $pagina - $lim : 1); 
     $fim = ((($pagina+$lim) < $numPaginas) ? $pagina+$lim : $numPaginas);
-
-    foreach ($result->results as $user){
-        $date = new DateTime();    
-        $date->setTimestamp($user->dateCreated);
-        $finalDate = $date->format('d-m-Y H:i:s') . "\n";
-        // echo $user->name." - "; 
-        // echo $finalDate."<br />"; 
-    }
-    //exibe a paginação 
-    // for($i = 1; $i < $numPaginas + 1; $i++) { 
-        // echo "<a href='invexo.php?pagina=$i'>".$i."</a> "; 
-    // } 
+    
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -73,7 +61,7 @@
             </div>
         </div>
     
-            <table class="table" style="TABLE-LAYOUT: fixed">
+            <table class="table">
             <thead class="thead-dark">
                     <tr>
                         <th scope="col">Negócio</th>
@@ -98,22 +86,20 @@
                             $Empreendimento = $name[1];
                             $Negocio = $name[0];
                         }
-                        
                     ?>
                     <tr>
+                        <!-- <td scope="row"><?= $user->name  ?></td> -->
                         <?php foreach ($user->customFieldValues as $values): 
                             $Bairro = '';
                             $Origem = '';
                             $Qualificação = '';
                             $Mensagem = '';
-
                             if ($values->customField->name == 'Empreendimento'){
                                 if ($Empreendimento == ''){
-                                        $Empreendimento = $values->label;
-                                        $Negocio = $user->name;
-                                    }
+                                    $Empreendimento = $values->label;
+                                    $Negocio = $user->name;
+                                }
                             }
-                            
                             if ($values->customField->name == 'Bairro'){
                                 $Bairro = $values->label;
                             }
@@ -128,7 +114,7 @@
                             }
                         ?>
                         <?php endforeach ?>
-                        <td scope="row"><?= $Negocio  ?></td>
+                        <td scope="row"><?= $Negocio ?></td>
                         <td scope="row"><?= $Empreendimento  ?></td>
                         <td scope="row"><?= $Bairro  ?></td>
                         <td scope="row"><?= $Origem  ?></td>
@@ -145,15 +131,16 @@
             <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
                 <?php 
-                if ($numPaginas > 1 && $pagina <= $numPaginas){
-                    for($i = $inicio; $i < $fim + 1; $i++) {
+                    if ($numPaginas > 1 && $pagina <= $numPaginas){
+                        for($i = $inicio; $i < $fim + 1; $i++) {
                 ?>
-                <!-- <a class="page-link" href='invexo.php?pagina=$i'.$i aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a> -->
-                
                 <a class="page-link" href="invexo.php?pagina=<?php echo $i; ?>"><?php echo $i ?></a>
-                <!-- <li class="page-item"><a class="page-link" href='invexo.php?pagina=$i'>$i</a></li>
+                <!-- <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
                 <li class="page-item">
                 <a class="page-link" href="#" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>

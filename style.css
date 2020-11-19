@@ -8,16 +8,15 @@
 	margin-left: 20px;
 	
 }
+
 .row{
 	margin-bottom: 30px;
-	max-width: 50px;
-	max-height: 50px;
+	max-width: 1700px;
 }
 .container-fluid{ 
 	max-width: 1700px;
-	max-height: 100px;
 }
-.table tr{
-	height: 50px;
-	width: 100px;
-}
+/* .table tr{
+height: 50px;
+width: 100px;
+} */
