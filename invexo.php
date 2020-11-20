@@ -1,5 +1,17 @@
 <?php
     include_once 'negocios.php';
+
+    $message = passthru("./scripts/teste.py 2>&1");
+    print_r($message);
+
+
+    // function console_log($output, $with_script_tags = true) {
+    //     $js_code = 'console.log(' . json_encode($output, JSON_HEX_TAG) . ');';
+    //     if ($with_script_tags) {
+    //         $js_code = '<script>' . $js_code . '</script>';
+    //     }
+    //     echo $js_code;
+    // }
     //verifica a página atual caso seja informada na URL, senão atribui como 1ª página 
     $pagina = (isset($_GET['pagina']))? $_GET['pagina'] : 1; 
     $pagina = intval($pagina);
@@ -16,6 +28,92 @@
     //variavel para calcular o início da visualização com base na página atual 
     $inicio = ((($pagina - $lim) > 1)? $pagina - $lim : 1); 
     $fim = ((($pagina+$lim) < $numPaginas) ? $pagina+$lim : $numPaginas);
+
+    // $url = "https://api.moskitcrm.com/v2/deals/search";
+    // $data = array("field"=>"CF_lXODObivipvANmaN","expression"=>"all_of", "values"=> array(165206));
+    // $data = "{\"field\" : \"CF_lXODObivipvANmaN\", \"expression\" : \"all_of\", \"values\" : [\"165206\"] }";
+    // $options = array(
+    //     'http' => array(
+    //         'header'  => array( 'apikey:  168ec8df-5e4f-440f-b3cd-d03b1039dff7', 'Content-Type: application/json'),
+    //         'method'  => 'POST',
+    //         'content' => http_build_query($data)
+    //     )
+    // );
+    // $context  = stream_context_create($options);
+    // $teste = file_get_contents($url, false, $context);
+
+    // $curl = curl_init($url);
+    // curl_setopt($curl, CURLOPT_POST, true);
+    // curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+    // curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    // curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+    //     'apikey: a4ca266a-ef70-462f-a5bd-abc6340928b0',
+    //     'Content-Type: application/json',
+    //     ));
+    // $response = curl_exec($curl);
+    // curl_close($curl);
+    // $teste = $response;
+
+    // console_log($teste);
+    // echo var_dump(http_response_code());
+
+    // $url = 'url_to_post';
+    // $data = array("first_name" => "First name","last_name" => "last name","email"=>"email@gmail.com","addresses" => array ("address1" => "some address" ,"city" => "city","country" => "CA", "first_name" =>  "Mother","last_name" =>  "Lastnameson","phone" => "555-1212", "province" => "ON", "zip" => "123 ABC" ) );
+
+    // $postdata = json_encode($data);
+
+    // $ch = curl_init($url);
+    // curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    // curl_setopt($ch, CURLOPT_POST, 1);
+    // curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+    // curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    // curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    // curl_setopt($ch, CURLOPT_HTTPHEADER, array('apikey: 168ec8df-5e4f-440f-b3cd-d03b1039dff7', 'Content-Type: application/json'));
+    // $teste = curl_exec($ch);
+    // curl_close($ch);
+    // print_r($teste);
+    // echo var_dump(http_response_code());
+
+
+
+    // $data = array("first_name" => "First name","last_name" => "last name","email"=>"email@gmail.com","addresses" => array ("address1" => "some address" ,"city" => "city","country" => "CA", "first_name" =>  "Mother","last_name" =>  "Lastnameson","phone" => "555-1212", "province" => "ON", "zip" => "123 ABC" ) );
+
+    // $data_string = json_encode(array("customer" =>$data));
+
+    // $ch = curl_init($url);
+
+    // curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+
+    // curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'apikey: 168ec8df-5e4f-440f-b3cd-d03b1039dff7'));
+
+    // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    // $teste = curl_exec($ch);
+
+    // curl_close($ch);
+
+    // echo "$teste";
+
+
+    // $data = array("field"=>"CF_lXODObivipvANmaN","expression"=>"all_of", "values"=> array("165206"));                                                                    
+    // $data_string = json_encode($data);                                                                                   
+                                                                                                                        
+    // $ch = curl_init('https://api.moskitcrm.com/v2/deals/search');                                                                      
+    // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");                                                                     
+    // curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);                                                                  
+    // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      
+    // curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    //     'apikey: 168ec8df-5e4f-440f-b3cd-d03b1039dff7',                                                                          
+    //     'Content-Type: application/json',                         
+    // ));                                                                                                                   
+                                                                                                                        
+    // $teste = curl_exec($ch);
+    // curl_close($ch);
+
+    // $final = json_decode($teste);
+
+    // print_r($final);
     
 ?>
 <!DOCTYPE html>
@@ -88,7 +186,6 @@
                         }
                     ?>
                     <tr>
-                        <!-- <td scope="row"><?= $user->name  ?></td> -->
                         <?php foreach ($user->customFieldValues as $values): 
                             $Bairro = '';
                             $Origem = '';
@@ -135,17 +232,6 @@
                         for($i = $inicio; $i < $fim + 1; $i++) {
                 ?>
                 <a class="page-link" href="invexo.php?pagina=<?php echo $i; ?>"><?php echo $i ?></a>
-                <!-- <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-                </li> -->
                 <?php
                     }
                 }?>
