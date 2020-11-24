@@ -1,8 +1,13 @@
 <?php
     include_once 'negocios.php';
 
-    $message = passthru("./scripts/teste.py 2>&1");
-    print_r($message);
+    // $message = passthru("./scripts/teste.py -pag 2 -regs 2 2>&1");
+    // print_r($message);
+    // echo gettype($message);
+
+    // $arr = json_decode($message);
+    // var_dump($arr);
+    // echo $arr; 
 
 
     // function console_log($output, $with_script_tags = true) {
@@ -18,9 +23,25 @@
     
     // echo "Tipo pagina no invexo.php topo: ".gettype($pagina)."\n";
     // echo 'PAGINA : '.$pagina;
-    $registros = 15;
+    $registros = 10;
     $result = Negocios::index($pagina, $registros);
-    $total = $result->metadata->pagination->total;
+    // print_r($result);
+    // echo count($result);
+    // print_r($result);
+    
+    // foreach ($result as $i => $value) {
+        // print_r($i);
+        // print_r($result[$i]);
+    // }
+    // print_r($result);    
+
+    if (count($result) != 10) {
+        $total = $pagina;
+        echo 'ACABOU';
+    } else{
+        $total = $pagina + 1;
+    }
+
     //calcula o número de páginas arredondando o resultado para cima 
     $numPaginas = ceil($total/$registros); 
     $lim = 5;
@@ -30,7 +51,7 @@
     $fim = ((($pagina+$lim) < $numPaginas) ? $pagina+$lim : $numPaginas);
 
     // $url = "https://api.moskitcrm.com/v2/deals/search";
-    // $data = array("field"=>"CF_lXODObivipvANmaN","expression"=>"all_of", "values"=> array(165206));
+    // $data = array("field"=>"CF_lXODObivipvANmaN","expression"=>"all_of", "values"=> array("165206"));
     // $data = "{\"field\" : \"CF_lXODObivipvANmaN\", \"expression\" : \"all_of\", \"values\" : [\"165206\"] }";
     // $options = array(
     //     'http' => array(
@@ -42,18 +63,21 @@
     // $context  = stream_context_create($options);
     // $teste = file_get_contents($url, false, $context);
 
+    // $postdata = json_encode($data);
+
     // $curl = curl_init($url);
     // curl_setopt($curl, CURLOPT_POST, true);
-    // curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+    // curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata);
     // curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
     // curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-    //     'apikey: a4ca266a-ef70-462f-a5bd-abc6340928b0',
+    //     'apikey: 168ec8df-5e4f-440f-b3cd-d03b1039dff7',
     //     'Content-Type: application/json',
     //     ));
     // $response = curl_exec($curl);
     // curl_close($curl);
     // $teste = $response;
 
+    // print_r($teste);
     // console_log($teste);
     // echo var_dump(http_response_code());
 
@@ -73,7 +97,6 @@
     // $teste = curl_exec($ch);
     // curl_close($ch);
     // print_r($teste);
-    // echo var_dump(http_response_code());
 
 
 
@@ -173,42 +196,82 @@
                 </thead>
 
                 <tbody>
-                    <?php foreach ($result->results as $user):
-                        $date = new DateTime();    
-                        $date->setTimestamp($user->dateCreated);
-                        $finalDate = $date->format('d-m-Y H:i:s') . "\n";
+                    <?php foreach ($result as $user):
+                        // print_r($user);
+                        // print_r($user->name);
+                        $date = explode('T', $user->dateCreated);
+                        $dia = $date[0];
+                        $hora = $date[1];
+
+                        $d = explode('-', $dia)[2];
+                        $m = explode('-', $dia)[1];
+                        $a = explode('-', $dia)[0];
+                        $finaldia = $d . '-'. $m . '-'. $a;
+
+                        $horario = explode('.', $hora)[0];
+                        $H = intval(explode(':', $horario)[0]) - 3;
+                        $M = explode(':', $horario)[1];
+                        $S = explode(':', $horario)[2];
+
+                        $finalHora = $H . ':'. $M . ':' . $S;
+
+                        // print_r($user->dateCreated);
+                        // $finalDate = $date->format('d-m-Y H:i:s') . "\n";
+                        $finalDate = $finaldia .' '. $finalHora ."\n";
                         $Negocio = '';
                         $Empreendimento = '';
+
                         if (strpos($user->name, '|')){
                             $name = explode('|', $user->name);
                             $Empreendimento = $name[1];
                             $Negocio = $name[0];
                         }
+                        // print_r($Empreendimento);
                     ?>
                     <tr>
-                        <?php foreach ($user->customFieldValues as $values): 
-                            $Bairro = '';
-                            $Origem = '';
-                            $Qualificação = '';
-                            $Mensagem = '';
-                            if ($values->customField->name == 'Empreendimento'){
+                        <?php include_once 'customFields.php';
+                        
+                        $Bairro = '';
+                        $Origem = '';
+                        $Qualificação = '';
+                        $Mensagem = '';
+                        
+                        foreach ($user->entityCustomFields as $values): 
+                            // print_r($values);
+
+                            if ($values->id == 'CF_42AmaJiZCW64LDjl'){
+                                $Mensagem = $values->textValue;
+                                // echo $Mensagem;
+
+                            }
+                            if ($values->id == 'CF_ylAm0viKi37pqvbx'){
                                 if ($Empreendimento == ''){
-                                    $Empreendimento = $values->label;
+                                    $endpoint = '/customFields/CF_ylAm0viKi37pqvbx/options/' . $values->options[0];
+                                    $value = CustomFields::index($endpoint);
+                                    $Empreendimento = $value->label;
                                     $Negocio = $user->name;
                                 }
                             }
-                            if ($values->customField->name == 'Bairro'){
-                                $Bairro = $values->label;
+                            if ($values->id  == 'CF_Pj3qYeidiNxLqQeb'){
+                                $endpoint = '/customFields/CF_Pj3qYeidiNxLqQeb/options/'. $values->options[0]; 
+                                $value = CustomFields::index($endpoint);
+                                // print_r($value->label);
+                                $Bairro = $value->label;
+                                // echo $Bairro;
                             }
-                            if ($values->customField->name == 'Origem'){
-                                $Origem = $values->value;
+                            if ($values->id == 'CF_GwyMgWi9CWAzzMLA'){
+                                $Origem = $values->textValue;
                             }
-                            if ($values->customField->name == 'Qualificação'){
-                                $Qualificação = $values->label;
+                            if ($values->id == 'CF_lXODObivipvANmaN'){
+                                if ($values->options[0] == 165206){
+                                    $Qualificação = 'Bom';
+                                } else {
+                                    $Qualificação = 'Ruim';
+                                }
                             }
-                            if ($values->customField->name == 'Mensagem'){
-                                $Mensagem = $values->value;
-                            }
+                            // if ($values->customField->name == 'Mensagem'){
+                            //     $Mensagem = $values->value;
+                            // }
                         ?>
                         <?php endforeach ?>
                         <td scope="row"><?= $Negocio ?></td>
